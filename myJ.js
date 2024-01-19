@@ -1,4 +1,5 @@
 function vlas(){
-  alert("kuzma")
+  alert("kuzma");
+  alert("123")
   return
 }
