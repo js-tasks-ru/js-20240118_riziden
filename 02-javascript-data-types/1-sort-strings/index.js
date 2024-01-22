@@ -11,6 +11,8 @@ export function sortStrings(arr, param = 'asc') {
      }else{
      return arr.sort((a, b) => a.localeCompare(b,'ru',{ caseFirst: 'upper' })).reverse()
     }
+
+    
    }
 
-}
+
