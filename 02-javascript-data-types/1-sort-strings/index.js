@@ -6,14 +6,14 @@
  */
 export function sortStrings(arr, param = 'asc') {
    
-   let arrCopy = [...arr]
+   const arrCopy = [...arr]
    if(param == 'asc') { 
      
    return arrCopy.sort((a, b) => a.localeCompare(b,'ru',{ caseFirst: 'upper' }))
     // return arr.sort()
-   }else{
-   return arrCopy.sort((a, b) => a.localeCompare(b,'ru',{ caseFirst: 'upper' })).reverse()
-  }
+   }
+   return arrCopy.sort((b, a) => a.localeCompare(b,'ru',{ caseFirst: 'upper' }))
+  
 
    }
 
