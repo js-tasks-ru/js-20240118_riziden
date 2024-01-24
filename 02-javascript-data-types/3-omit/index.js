@@ -7,8 +7,8 @@
 export const omit = (obj, ...fields) => {
 
   return Object.fromEntries(Object.entries(obj).filter(([key, value]) =>{
-    if(!fields.includes(key)) return[key,value]
-     })
-     )
+    if (!fields.includes(key)) {return [key, value];}
+  })
+  );
 
 };

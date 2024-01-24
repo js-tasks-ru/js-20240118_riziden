@@ -6,16 +6,15 @@
  */
 export function sortStrings(arr, param = 'asc') {
    
-   const arrCopy = [...arr]
-   if(param == 'asc') { 
+  const arrCopy = [...arr];
+  if (param == 'asc') { 
      
-   return arrCopy.sort((a, b) => a.localeCompare(b,'ru',{ caseFirst: 'upper' }))
-    // return arr.sort()
-   }
-   return arrCopy.sort((b, a) => a.localeCompare(b,'ru',{ caseFirst: 'upper' }))
+    return arrCopy.sort((a, b) => a.localeCompare(b, 'ru', { caseFirst: 'upper' }));
+  }
+  return arrCopy.sort((b, a) => a.localeCompare(b, 'ru', { caseFirst: 'upper' }));
   
 
-   }
+}
 
    
 
