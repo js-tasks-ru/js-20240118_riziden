@@ -8,7 +8,7 @@
 
 export function invertObj(obj) {
 
-  if(!obj) return
+  if (!obj) {return;}
   
   return Object.fromEntries(Object
                .entries(obj)
