@@ -7,36 +7,35 @@
 
 
 
-export function trimSymbols(string, size){
-  let counter = 1
-  let newStr = []
+export function trimSymbols(string, size) {
+  
+  if ((size === 0) || !string) {return "";}
+  if (!size) {return string;}  
 
-  if ((size === 0)||!string) return ""
-  if (!size) return string
-  
-  let arr = string.split('')
-  
+  let counter = 1;
+  let newStr = [];
+  let arr = string.split('');
                          
-  for(let i=0; i <= arr.length; i++){
+  for (let i = 0; i <= arr.length; i++) {
 
-  if (arr[i]==arr[i+1] && (counter<size)){
+    if (arr[i] == arr[i + 1] && (counter < size)) {
   
-  newStr.push(arr[i])
-  counter++
-  continue 
+      newStr.push(arr[i]);
+      counter++;
+      continue; 
 
-  }else if(arr[i]!=arr[i+1]) {
-  counter = 1
-  newStr.push(arr[i])
-  continue
+    } else if (arr[i] != arr[i + 1]) {
+      counter = 1;
+      newStr.push(arr[i]);
+      continue;
 
-  }else if(!arr[i+1]){
-    newStr.push(arr[i]) 
-    break
-  }
+    } else if (!arr[i + 1]) {
+      newStr.push(arr[i]); 
+      break;
+    }
 
   }
   
-newStr.pop()
-return newStr.join("")
+  newStr.pop();
+  return newStr.join("");
 }
