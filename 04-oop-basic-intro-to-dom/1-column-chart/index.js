@@ -40,7 +40,7 @@ export default class ColumnChart {
     <div class="column-chart" style="--chart-height: 50">
       <div class="column-chart__title">
         ${this.label}
-        ${this.createLinkTemplate}
+        ${this.createLinkTemplate()}
       </div>
       <div class="column-chart__container">
         <div data-element="header" class="column-chart__header">344</div>
