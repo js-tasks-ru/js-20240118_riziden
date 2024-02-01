@@ -17,18 +17,22 @@ export default class ColumnChart {
     let columnAmount = document.createElement('div');
 
 
-    nameChart.innerHTML += `${this.label}`;
-    columnAmount.innerHTML += `${this.value}`;
+    
   
-    //nameChart.append(<p>this.label</p>)
+    //присваиваем классы
     columnChart.className = "column-chart__chart";
     nameChart.className = 'column-chart__title';
     columnAmount.className = 'column-chart__header';
 
+    //добавляем данные
+    nameChart.innerHTML += `${this.label}`;
+    columnAmount.innerHTML += `${this.value}`;
+
+
     columnChart.append(nameChart);
     columnChart.append(columnAmount);
   
-    console.log(columnChart);
+    //console.log(columnChart);
     
   
 
