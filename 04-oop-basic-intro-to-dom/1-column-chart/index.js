@@ -15,9 +15,9 @@ export default class ColumnChart {
 
     this.value = value;
     this.link = link;
-    this.formatHeading = ()=>{};
+    this.formatHeading = formatHeading;
 
-    this.element = this.createElement(this.createTemplate);
+    this.element = this.createElement(this.createTemplate());
 
   }
 
@@ -27,47 +27,64 @@ export default class ColumnChart {
     return element.firstElementChild
   }
 
+  getColumnProps() {
+    const maxValue = Math.max(...this.data);
+    const scale = 50 / maxValue;
+  
+    return this.data.map(item => {
+      return {
+        percent: (item / maxValue * 100).toFixed(0) + '%',
+        value: String(Math.floor(item * scale))
+      };
+    });
+  }
+
   createLinkTemplate() {
     if (this.link) {  
-      return `<a href="${this.link}" class="column-chart__link">View all</a>`;
+      return '<a href="https://google.com" class="column-chart__link">View all</a>';
     }
     return '';
   }
-
-  createTemplate() {
-    return (` 
-    
-    <div class="column-chart" style="--chart-height: 50">
-      <div class="column-chart__title">
-        ${this.label}
-        ${this.createLinkTemplate()}
-      </div>
-      <div class="column-chart__container">
-        <div data-element="header" class="column-chart__header">344</div>
-        <div data-element="body" class="column-chart__chart">
-          <div style="--value: 2" data-tooltip="6%"></div>
-          <div style="--value: 22" data-tooltip="44%"></div>
-          <div style="--value: 5" data-tooltip="11%"></div>
-          <div style="--value: 50" data-tooltip="100%"></div>
-          <div style="--value: 12" data-tooltip="25%"></div>
-          <div style="--value: 4" data-tooltip="8%"></div>
-          <div style="--value: 13" data-tooltip="28%"></div>
-          <div style="--value: 5" data-tooltip="11%"></div>
-          <div style="--value: 23" data-tooltip="47%"></div>
-          <div style="--value: 12" data-tooltip="25%"></div>
-          <div style="--value: 34" data-tooltip="69%"></div>
-          <div style="--value: 1" data-tooltip="3%"></div>
-          <div style="--value: 23" data-tooltip="47%"></div>
-          <div style="--value: 27" data-tooltip="56%"></div>
-          <div style="--value: 2" data-tooltip="6%"></div>
-          <div style="--value: 1" data-tooltip="3%"></div>
-        </div>
-        </div>
-      </div>
-    `);
+ 
+  createChartBodyTemplate() {
+    return this.getColumnProps().map(({ value, percent})=>( 
+      `<div style="--value: ${value}" data-tooltip="${percent}"></div>`
+    )).join('');
   }
 
-  destroy() {} 
+  createChartClasses() {
+    return this.data.length ? 'column-chart' : 'column-chart column-chart_loading';
+  }
+
+  createTemplate() {
+    return `  
+    <div class="${this.createChartClasses()}" style="--chart-height: 50">
+    <div class="column-chart__title">
+    ${this.label}
+    ${this.createLinkTemplate()}
+    </div>
+      <div class="column-chart__container">
+        <div data-element="header" class="column-chart__header">${this.formatHeading(this.value)}</div>
+        <div data-element="body" class="column-chart__chart">
+          ${this.createChartBodyTemplate()}
+        </div>
+      </div>
+    </div>
+    `;   
+  }
+
+  update(newData) {
+    this.data = newData
+    this.element.querySelector('[data-element="body"]').innerHTML = this.createChartBodyTemplate();
+  }
+
+  remove() {
+    this.element.remove();
+  }
+
+  destroy() {
+    this.remove();
+  } 
   /* element() {
   //создаем блоки
  
