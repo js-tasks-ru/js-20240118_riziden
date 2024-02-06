@@ -2,12 +2,13 @@
 
 export default class NotificationMessage {
     element;
+    static lastNotificationMessage;
     
     constructor(
       message = '',
       {
-        duration = 0,
-        type = ''
+        duration = 1000,
+        type = 'success' || 'error',
       } = {}) {
       this.message = message;
       this.duration = duration;
@@ -20,26 +21,45 @@ export default class NotificationMessage {
       const element = document.createElement('div');
       element.innerHTML = template;
 
-      document.body.append(element.firstElementChild)
+      //document.body.append(element.firstElementChild)
       //console.log(element.firstElementChild)
       return element.firstElementChild;
     }
 
     createTemplate() {
       return `  
-      <div class="notification success" style="--value:20s">
+      <div class="notification ${this.type}" style="--value:20s">
     <div class="timer"></div>
     <div class="inner-wrapper">
-      <div class="notification-header">success</div>
+      <div class="notification-header">${this.type}</div>
       <div class="notification-body">
-        Hello world
+        ${this.message}
       </div>
     </div>
   </div>
       `;   
     }
-    show() {
-      document.body.append(this.element.firstElementChild)
+    show(container = document.body) {
+      if (NotificationMessage.lastNotificationMessage) {
+        NotificationMessage.lastNotificationMessage.destroy();
+      //hide
+      }
+      //show
+      container.appendChild(this.element);
+      NotificationMessage.lastNotificationMessage = this;
+      this.timeoutID = setTimeout(()=>{this.remove()}, this.duration);
+
+      
+    }
+    remove() {
+      this.element.remove();
+    }
+
+    destroy() {
+      this.remove();
+      if (this.timeoutID) {
+        clearTimeout(this.timeoutID);
+      }
     }
 
 }
