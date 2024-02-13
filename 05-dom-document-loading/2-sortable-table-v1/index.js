@@ -1,13 +1,13 @@
 
 export default class SortableTable {
-  static lastTable;
-  
+  element;
+  subElements = {};
   
   constructor(headerConfig = [], data = []) {
     this.headerConfig = headerConfig;
     this.data = data;
-    this.subElements = {};
     this.element = this.createElement(this.createTemplate()); 
+    this.selectSubElements();
   }
 
   createElement(template) {
@@ -18,23 +18,29 @@ export default class SortableTable {
     return element.firstElementChild;
   }
 
+  selectSubElements() {
+    this.element.querySelectorAll('[data-element]').forEach(element => {
+      this.subElements[element.dataset.element] = element;
+    });
+  }
+
   createTemplate() {
     return ` 
   <div  data-element="productsContainer" class="products-list__container">
   <div class="sortable-table">
 
     <div data-element="header" class="sortable-table__header sortable-table__row">
-    ${this.createTemplateHeader()}
+    ${this.createHeaderTemplate()}
     </div> 
     <div id = "glav" data-element="body" class="sortable-table__body">
-        ${this.createTableBody()}
+        ${this.createBodyTemplate()}
       </div>
   </div>
   </div>
     `; 
   }
 
-  createTemplateHeader() {
+  createHeaderTemplate() {
     return this.headerConfig.map((i)=>{         
       return `
       <div class="sortable-table__cell" data-id=${i.id} data-sortable="false">
@@ -45,74 +51,51 @@ export default class SortableTable {
     }).join('') ;
   }
 
-  createTableBody() {
-    let tableRow = '';
-
-    const tableBody = this.data.forEach((elem)=>{
-      
-      tableRow += this.createTableRow(elem);
-      
-    });
-    
-    return tableRow;
+  createBodyTemplate() {
+    return this.data.map(this.createRowTemplate).join('');
   }
 
-  createTableRow(elem) {
+  createRowTemplate = (data) => {
     return `
-    <a href="/products/3d-ochki-epson-elpgs03" class="sortable-table__row">
-        ${this.createPartRow(elem)}
+      <a href="/products/3d-ochki-epson-elpgs03" class="sortable-table__row">
+        ${this.createRowContentTemplate(data)}
       </a>
-    `
+    `;
   }
 
-  createPartRow(elem) {
-    return this.headerConfig.map((i)=>{ 
-      if (i.id == 'images') {
-        return `
-      <div class="sortable-table__cell"></div>
-    `
-      }      
-      return `
-      <div class="sortable-table__cell">${elem[i.id]}</div>
-    `
-   }).join('') ;
+  createRowContentTemplate = (data) => {
+    return this.headerConfig.map((columnConfig)=>{ 
+      if (columnConfig.template) {
+        return columnConfig.template(data);
+      }
+
+      const fieldName = columnConfig.id;
+      const fieldValue = data[fieldName];
+  
+      return `<div class="sortable-table__cell">${fieldValue}</div>`;
+    }).join('') ;
   }
 
-  sort(field, order) {
-    let sortType = 'string';
-    let copyData;
-    this.headerConfig.map((i)=>{
-      if(i.id == field) sortType = i.sortType;
-    });
+  sort(field = 'title', order = 'desc') {
+    const orders = {
+      'desc': 1,
+      'asc': -1,
+    };
 
-    this.element.remove();
+    const sortedData = [...this.data].sort((itemA, itemB) => {
+      const k = orders[order];
+      const valueA = itemA[field];
+      const valueB = itemB[field];
 
-    if (order == 'asc') {
-      copyData = this.data.sort((a, b)=>{
-        if (sortType == 'string') {  
-         
-          return a[field].localeCompare(b[field], 'ru', { caseFirst: 'upper' });
-        }
-        return a[field] - b[field];
-      }); 
-    } else {
-      copyData = this.data.sort((a, b)=>{
-        if (sortType == 'string') {  
-          return b[`${field}`].localeCompare(a[`${field}`], 'ru', { caseFirst: 'upper' });
-        }
-        return b[`${field}`] - a[`${field}`];
-      }); 
-    }
+      if (typeof valueA === 'string') {
+        return k * valueB.localeCompare(valueA, 'ru-en', {caseFirst: 'upper'});
+      }
 
-    
-    this.element = this.createElement(this.createTemplate(copyData));
-    document.body.append(this.element)
-   
-    this.element.querySelectorAll('[data-element]').forEach(element => {
-      this.subElements[element.dataset.element] = element; 
-    });
-      
-    this.subElements.body.innerHTML = this.createTableBody();
+      return k * (valueB - valueA);
+    });  
+
+    this.data = sortedData;
+    this.subElements.body.innerHTML = this.createBodyTemplate(sortedData);
   }
 
   destroy() {
