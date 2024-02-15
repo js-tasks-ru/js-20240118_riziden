@@ -12,6 +12,7 @@ export default class SortableTable {
     this.sorted = sorted;
     this.element = this.createElement(this.createTemplate()); 
     this.selectSubElements();
+    this.sort(this.sorted.id, this.sorted.order);
   }
 
   createElement(template) {
