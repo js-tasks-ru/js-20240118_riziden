@@ -13,17 +13,32 @@ export default class SortableTable {
     this.element = this.createElement(this.createTemplate()); 
     this.selectSubElements();
     this.sort(this.sorted.id, this.sorted.order);
+    //this.sort();
   }
 
   createElement(template) {
     
     const element = document.createElement('div');
     element.innerHTML = template;
-    console.log(element);
+
+    element.firstElementChild.addEventListener('pointerdown', (e)=>{
+      
+      if (e.target.parentElement.dataset.id) {
+        let el = e.target.parentElement;
+        this.sort(el.dataset.id, el.dataset.order, el.dataset.sor);
+
+        console.log(el.dataset.id, el.dataset.order, el.dataset.sor)
+
+        if (el.dataset.order == "desc") {el.dataset.order = "asc";
+        } else {
+          el.dataset.order = "desc";}
+      }
+    });
+    //this.selectSubElements(element);
     return element.firstElementChild;
   }
 
-  createElementsHandler(element) {
+  /* createElementsHandler(element) {
     element.querySelectorAll('[data-sortable]').forEach(elem => {
 
       elem.addEventListener('pointerdown', ()=>{this.sort(elem.dataset.id, elem.dataset.order);
@@ -31,12 +46,12 @@ export default class SortableTable {
       });
       
     });
-  }
+  } */
 
   selectSubElements() {
     this.element.querySelectorAll('[data-element]').forEach(element => {
       this.subElements[element.dataset.element] = element;
-      this.createElementsHandler(element)
+      //this.createElementsHandler(element)
     });
    
   }
@@ -60,7 +75,7 @@ export default class SortableTable {
   createHeaderTemplate() { 
     return this.headersConfig.map((element)=>{         
       return `
-      <div  class="sortable-table__cell" data-id=${element.id} data-sortable=${element.sortable} data-order = "asc">
+      <div  class="sortable-table__cell" data-id=${element.id} data-sortable=${element.sortable} data-order = "asc" data-sor=${element.sortType}>
         <span>${element.title}</span>
       </div>
     `
@@ -95,22 +110,24 @@ export default class SortableTable {
     }).join('') ;
   }
 
-  sort(field = 'title', order = 'desc') {
+  sort(field = 'title', order = 'desc', sor = 'string') {
     const orders = {
       'desc': -1,
       'asc': 1,
     };
 
-    console.log("PUSK________________")
     const sortedData = [...this.data].sort((itemA, itemB) => {
       const k = orders[order];
       const valueA = itemA[field];
       const valueB = itemB[field];
 
-      if (typeof valueA === 'string') { 
-        return k * valueB.localeCompare(valueA, 'ru-en', {caseFirst: 'upper'});
-      }
-      return k * (valueB - valueA);
+      if (typeof valueA == 'string') { 
+        
+         return k * valueB.localeCompare(valueA, 'ru-en', {caseFirst: 'upper'});
+      }else{
+        return k * (valueB - valueA);
+      }   
+      
     });  
 
     this.data = sortedData;
