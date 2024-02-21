@@ -21,7 +21,7 @@ export default class SortableTable {
     const element = document.createElement('div');
     element.innerHTML = template;
 
-    element.firstElementChild.addEventListener('pointerdown', (e)=>{
+    /* element.firstElementChild.addEventListener('pointerdown', (e)=>{
       
       if (e.target.parentElement.dataset.id) {
         let el = e.target.parentElement;
@@ -33,12 +33,12 @@ export default class SortableTable {
         } else {
           el.dataset.order = "desc";}
       }
-    });
+    }); */
     //this.selectSubElements(element);
     return element.firstElementChild;
   }
 
-  /* createElementsHandler(element) {
+  createElementsHandler(element) {
     element.querySelectorAll('[data-sortable]').forEach(elem => {
 
       elem.addEventListener('pointerdown', ()=>{this.sort(elem.dataset.id, elem.dataset.order);
@@ -46,12 +46,12 @@ export default class SortableTable {
       });
       
     });
-  } */
+  } 
 
   selectSubElements() {
     this.element.querySelectorAll('[data-element]').forEach(element => {
       this.subElements[element.dataset.element] = element;
-      //this.createElementsHandler(element)
+      this.createElementsHandler(element)
     });
    
   }
@@ -103,7 +103,7 @@ export default class SortableTable {
       const fieldName = columnConfig.id;
       const fieldValue = data[fieldName];
   
-      return `<div class="sortable-table__cell" data-id="title">
+      return `<div class="sortable-table__cell" data-id=${fieldName}>
       ${fieldValue}
       <span data-element="arrow" class="sortable-table__sort-arrow">
       </div>`;
@@ -123,8 +123,8 @@ export default class SortableTable {
 
       if (typeof valueA == 'string') { 
         
-         return k * valueB.localeCompare(valueA, 'ru-en', {caseFirst: 'upper'});
-      }else{
+        return k * valueB.localeCompare(valueA, 'ru-en', {caseFirst: 'upper'});
+      } else {
         return k * (valueB - valueA);
       }   
       
