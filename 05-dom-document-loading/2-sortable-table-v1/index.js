@@ -1,13 +1,15 @@
 
-export default class SortableTable {
+export default class SortableTableV1 {
   element;
   subElements = {};
+  
   
   constructor(headerConfig = [], data = []) {
     this.headerConfig = headerConfig;
     this.data = data;
     this.element = this.createElement(this.createTemplate()); 
     this.selectSubElements();
+    this.proba = this.proba
   }
 
   createElement(template) {
@@ -32,7 +34,7 @@ export default class SortableTable {
     <div data-element="header" class="sortable-table__header sortable-table__row">
     ${this.createHeaderTemplate()}
     </div> 
-    <div id = "glav" data-element="body" class="sortable-table__body">
+    <div data-element="body" class="sortable-table__body">
         ${this.createBodyTemplate()}
       </div>
   </div>
@@ -41,10 +43,10 @@ export default class SortableTable {
   }
 
   createHeaderTemplate() {
-    return this.headerConfig.map((i)=>{         
+    return this.headerConfig.map((element)=>{         
       return `
-      <div class="sortable-table__cell" data-id=${i.id} data-sortable="false">
-        <span>${i.title}</span>
+      <div class="sortable-table__cell" data-id=${element.id} data-sortable=${element.sortable} data-order = "asc">
+        <span>${element.title}</span>
       </div>
     `
     
@@ -72,7 +74,10 @@ export default class SortableTable {
       const fieldName = columnConfig.id;
       const fieldValue = data[fieldName];
   
-      return `<div class="sortable-table__cell">${fieldValue}</div>`;
+      return `<div class="sortable-table__cell" data-id=${fieldName}>
+      ${fieldValue}
+      <span data-element="arrow" class="sortable-table__sort-arrow">
+      </div>`;
     }).join('') ;
   }
 
@@ -100,6 +105,10 @@ export default class SortableTable {
 
   destroy() {
     this.element.remove();
+  }
+
+  proba() {
+    alert('1');
   }
 }
 

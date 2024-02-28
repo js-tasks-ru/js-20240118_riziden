@@ -1,4 +1,7 @@
-export default class SortableTable {
+import SortableTableV1 from "../../05-dom-document-loading/2-sortable-table-v1/index.js";
+
+
+export default class SortableTable extends SortableTableV1 {
 
   element;
   subElements = {};
@@ -7,38 +10,52 @@ export default class SortableTable {
     data = [],
     sorted = {}
   } = {}) {
+    super(headersConfig, data);
+    
     this.headersConfig = headersConfig;
     this.data = data;
     this.sorted = sorted;
-    this.element = this.createElement(this.createTemplate()); 
+    this.element = this.createElement(super.createTemplate()); 
     this.selectSubElements();
     this.sort(this.sorted.id, this.sorted.order);
-    //this.sort();
+    
   }
 
+  
+
+
   createElement(template) {
-    
+   
     const element = document.createElement('div');
     element.innerHTML = template;
 
-    /* element.firstElementChild.addEventListener('pointerdown', (e)=>{
-      
-      if (e.target.parentElement.dataset.id) {
-        let el = e.target.parentElement;
-        this.sort(el.dataset.id, el.dataset.order, el.dataset.sor);
-
-        console.log(el.dataset.id, el.dataset.order, el.dataset.sor)
-
-        if (el.dataset.order == "desc") {el.dataset.order = "asc";
-        } else {
-          el.dataset.order = "desc";}
-      }
-    }); */
-    //this.selectSubElements(element);
+    element.firstElementChild.addEventListener('pointerdown', this.onDivClick);
+    
     return element.firstElementChild;
   }
 
-  createElementsHandler(element) {
+  onDivClick = (e)=> {
+    if (e.target.closest('[data-id]')) {
+      let el = e.target.closest('[data-id]');
+      this.sort(el.dataset.id, el.dataset.order);
+
+      console.log(el.dataset.id, el.dataset.order);
+
+      if (el.dataset.order == "desc") {el.dataset.order = "asc";
+      } else {
+        el.dataset.order = "desc";}
+    }
+  }
+
+  selectSubElements() {
+    this.element.querySelectorAll('[data-element]').forEach(element => {
+      this.subElements[element.dataset.element] = element;
+      //this.createElementsHandler(element);
+    });
+   
+  }
+  
+  /* createElementsHandler(element) {
     element.querySelectorAll('[data-sortable]').forEach(elem => {
 
       elem.addEventListener('pointerdown', ()=>{this.sort(elem.dataset.id, elem.dataset.order);
@@ -46,43 +63,38 @@ export default class SortableTable {
       });
       
     });
-  } 
+  }  */
 
-  selectSubElements() {
-    this.element.querySelectorAll('[data-element]').forEach(element => {
-      this.subElements[element.dataset.element] = element;
-      this.createElementsHandler(element)
-    });
-   
-  }
 
-  createTemplate() {
+
+  
+  /* createTemplate() {
     return ` 
   <div  data-element="productsContainer" class="products-list__container">
   <div class="sortable-table">
 
     <div data-element="header" class="sortable-table__header sortable-table__row">
-    ${this.createHeaderTemplate()}
+    ${super.createHeaderTemplate()}
     </div> 
     <div data-element="body" class="sortable-table__body">
-    ${this.createBodyTemplate()}
+    ${super.createBodyTemplate()}
       </div>
   </div>
   </div>
     `; 
-  }
+  } */
 
-  createHeaderTemplate() { 
+  /* createHeaderTemplate() { 
     return this.headersConfig.map((element)=>{         
       return `
-      <div  class="sortable-table__cell" data-id=${element.id} data-sortable=${element.sortable} data-order = "asc" data-sor=${element.sortType}>
+      <div  class="sortable-table__cell" data-id=${element.id} data-sortable=${element.sortable} data-order = "asc">
         <span>${element.title}</span>
       </div>
     `
     }).join('') ;
-  }
+  } */
 
-  createBodyTemplate() {
+  /* createBodyTemplate() {
     return this.data.map(this.createRowTemplate).join('');
   }
 
@@ -109,8 +121,9 @@ export default class SortableTable {
       </div>`;
     }).join('') ;
   }
-
-  sort(field = 'title', order = 'desc', sor = 'string') {
+ */
+  sort(field = 'title', order = 'desc') {
+    //this.proba()
     const orders = {
       'desc': -1,
       'asc': 1,
@@ -135,6 +148,7 @@ export default class SortableTable {
   }
 
   destroy() {
+    this.element.removeEventListener('pointerdown', this.onDivClick);
     this.element.remove();
   }
 }

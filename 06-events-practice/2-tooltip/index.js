@@ -4,10 +4,14 @@ class Tooltip {
 
   constructor() {
  
-
-    this.instanse = Tooltip.instanse;
-    if (this.instanse) return this.instanse;
+    if (Tooltip.instanse) {
+      return Tooltip.instanse;
+    }
     Tooltip.instanse = this;
+  
+    /* this.instanse = Tooltip.instanse;
+    if (this.instanse) return this.instanse;
+    Tooltip.instanse = this; */
 
     this.element = this.createElement();
     
@@ -30,35 +34,42 @@ class Tooltip {
     this.createElement();
   }
 
+  createTamplateElement(e) {
+    
+  }
+
+  onPointerOver = (e) => {
+    this.render(); 
+    !this.element || document.body.append(this.element);
+    if (e.target.dataset.tooltip) {
+      this.element.textContent = e.target.dataset.tooltip;
+    //this.element.hidden = !this.element.hidden;
+      this.element.classList = 'tooltip';
+    
+      this.element.style.left = e.clientX + 10 + 'px';
+      this.element.style.top = e.clientY + 'px';
+
+    }
+  }
+
+  onPointerOut = (e) => {
+    if (e.target.dataset.tooltip && this.element) {
+      this.element.remove();
+    }
+  }
+
   initialize () {
     
     document.body.append(this.element);
-     //this.element.hidden
-    document.addEventListener('pointerover', (e)=>{
-      this.render(); 
-      !this.element || document.body.append(this.element);
-      if (e.target.dataset.tooltip) {
-        this.element.textContent = e.target.dataset.tooltip;
-      //this.element.hidden = !this.element.hidden;
-        this.element.classList = 'tooltip';
-      
-        this.element.style.left = e.clientX + 10 + 'px';
-        this.element.style.top = e.clientY + 'px';
-
-      }
-    });
-
-    
-    document.addEventListener('pointerout', (e)=>{
-      //this.render();
-      if (e.target.dataset.tooltip && this.element) {
-        this.destroy();
-      }
-    });
+     
+    document.addEventListener('pointerover', this.onPointerOver);
+    document.addEventListener('pointerout', this.onPointerOut);
   }
 
   destroy() {
     this.element.remove();
+    document.removeEventListener('pointerover', this.onPointerOver);
+    document.removeEventListener('pointerout', this.onPointerOut);
   }
 }
 
