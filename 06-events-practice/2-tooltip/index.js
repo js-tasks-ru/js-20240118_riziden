@@ -1,6 +1,7 @@
 class Tooltip {
 
   element;
+  container;
 
   constructor() {
  
@@ -8,46 +9,38 @@ class Tooltip {
       return Tooltip.instanse;
     }
     Tooltip.instanse = this;
-  
-    /* this.instanse = Tooltip.instanse;
-    if (this.instanse) return this.instanse;
-    Tooltip.instanse = this; */
 
     this.element = this.createElement();
     
     this.initialize();
   }
-  //render() {}
-  //initialize () {}
-
 
   createElement() {
     
     const element = document.createElement('div');
-    //element.innerHTML = `<div>VLASOV${prop}</div>`;
-    //element.hidden = !element.hidden;
     
     return element;
   }
 
-  render(prop) {
-    this.createElement();
-  }
+  render(container) {
 
-  createTamplateElement(e) {
+
+   if(container) container.appendChild(this.element);
     
   }
 
-  onPointerOver = (e) => {
-    this.render(); 
-    !this.element || document.body.append(this.element);
-    if (e.target.dataset.tooltip) {
-      this.element.textContent = e.target.dataset.tooltip;
-    //this.element.hidden = !this.element.hidden;
+  onPointerOver = (event) => {
+    let container = event.target.closest('[data-tooltip]')
+    
+    this.render(container); 
+    
+    if (event.target.dataset.tooltip) {
+      this.element.textContent = event.target.dataset.tooltip;
+    
       this.element.classList = 'tooltip';
     
-      this.element.style.left = e.clientX + 10 + 'px';
-      this.element.style.top = e.clientY + 'px';
+      this.element.style.left = event.clientX + 10 + 'px';
+      this.element.style.top = event.clientY + 'px';
 
     }
   }
