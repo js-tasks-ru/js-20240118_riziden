@@ -31,7 +31,11 @@ export default class SortableTable extends SortableTableV1 {
   onDivClick = (e)=> {
     if (e.target.closest('[data-id]')) {
       let el = e.target.closest('[data-id]');
+
+      if (!el.dataset.order) {el.dataset.order = "asc"}
+
       this.sort(el.dataset.id, el.dataset.order);
+
 
       if (el.dataset.order == "desc") {el.dataset.order = "asc";
       } else {

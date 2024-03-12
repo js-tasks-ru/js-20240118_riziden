@@ -8,8 +8,7 @@ export default class SortableTableV1 {
     this.headerConfig = headerConfig;
     this.data = data;
     this.element = this.createElement(this.createTemplate()); 
-    this.selectSubElements();
-    this.proba = this.proba
+    this.selectSubElements = this.selectSubElements();
   }
 
   createElement(template) {
@@ -24,6 +23,7 @@ export default class SortableTableV1 {
     this.element.querySelectorAll('[data-element]').forEach(element => {
       this.subElements[element.dataset.element] = element;
     });
+    //console.log(this.subElements.body.firstElementChild.children[1].textContent)
   }
 
   createTemplate() {
@@ -45,13 +45,12 @@ export default class SortableTableV1 {
   createHeaderTemplate() {
     return this.headerConfig.map((element)=>{         
       return `
-      <div class="sortable-table__cell" data-id=${element.id} data-sortable=${element.sortable} data-order = "asc">
-        <span>${element.title}</span>
-      </div>
-    `
-    
+      <div class="sortable-table__cell" data-id=${element.id} data-sortable=${element.sortable}>
+      <span>${element.title}</span>
+      </div>`;
     }).join('') ;
   }
+
 
   createBodyTemplate() {
     return this.data.map(this.createRowTemplate).join('');
@@ -59,9 +58,7 @@ export default class SortableTableV1 {
 
   createRowTemplate = (data) => {
     return `
-      <a href="/products/3d-ochki-epson-elpgs03" class="sortable-table__row">
-        ${this.createRowContentTemplate(data)}
-      </a>
+      <a href="/products/3d-ochki-epson-elpgs03" class="sortable-table__row">${this.createRowContentTemplate(data)}</a>
     `;
   }
 
@@ -74,10 +71,7 @@ export default class SortableTableV1 {
       const fieldName = columnConfig.id;
       const fieldValue = data[fieldName];
   
-      return `<div class="sortable-table__cell" data-id=${fieldName}>
-      ${fieldValue}
-      <span data-element="arrow" class="sortable-table__sort-arrow">
-      </div>`;
+      return `<div class="sortable-table__cell" data-id=${fieldName}>${fieldValue}<span data-element="arrow" class="sortable-table__sort-arrow"></div>`;
     }).join('') ;
   }
 
@@ -107,8 +101,5 @@ export default class SortableTableV1 {
     this.element.remove();
   }
 
-  proba() {
-    alert('1');
-  }
 }
 
